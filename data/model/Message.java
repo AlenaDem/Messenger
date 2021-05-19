@@ -11,22 +11,22 @@ import data.Database;
 public class Message extends Dao{
 	static public String TABLE_NAME = "message";
 	private int id;
-	protected int chat_id;;
-	protected int creator_id;
-	private String message_body;
+	protected int chatId;
+	protected int creatorId;
+	private String messageBody;
 	private String link;
-	protected int image_id;
-	protected int file_id;
+	protected int imageId;
+	protected int fileId;
 	private Date time;
-	public Message(int id, int chat_id, int creator_id, String message_body, String link, int image_id, int file_id, Date time) {
+	public Message(int id, int chatId, int creatorId, String messageBody, String link, int imageId, int fileId, Date time) {
 		super(id);
 		this.id = id;
-		this.chat_id = chat_id;
-		this.creator_id = creator_id;
-		this.message_body = message_body;
+		this.chatId = chatId;
+		this.creatorId = creatorId;
+		this.messageBody = messageBody;
 		this.link = link;
-		this.image_id = image_id;
-		this.file_id = file_id;
+		this.imageId = imageId;
+		this.fileId = fileId;
 		this.time = time;
 	}
 	public  Message() {
@@ -38,23 +38,23 @@ public class Message extends Dao{
 	public int getid() {
 		return id;
 	}
-	public void setchat_id(int chat_id) {
-		this.chat_id = chat_id;
+	public void setchatId(int chatId) {
+		this.chatId = chatId;
 	}
-	public int getchat_id() {
-		return chat_id;
+	public int getchatId() {
+		return chatId;
 	}
-	public void setcreator_id(int creator_id) {
-		this.creator_id = creator_id;
+	public void setcreatorId(int creatorId) {
+		this.creatorId = creatorId;
 	}
-	public int getcreator_id() {
-		return creator_id;
+	public int getcreatorId() {
+		return creatorId;
 	}
-	public void setmessage_body(String message_body) {
-		this.message_body = message_body;
+	public void setmessageBody(String messageBody) {
+		this.messageBody = messageBody;
 	}
-	public String getmessage_body() {
-		return message_body;
+	public String getmessageBody() {
+		return messageBody;
 	}
 	public void setlink(String link) {
 		this.link = link;
@@ -62,17 +62,17 @@ public class Message extends Dao{
 	public String getlink() {
 		return link;
 	}
-	public void setimage_id(int image_id) {
-		this.image_id = image_id;
+	public void setimageId(int imageId) {
+		this.imageId = imageId;
 	}
-	public int getimage_id() {
-		return image_id;
+	public int getimageId() {
+		return imageId;
 	}
-	public void setfile_id(int file_id) {
-		this.file_id = file_id;
+	public void setfileId(int fileId) {
+		this.fileId = fileId;
 	}
-	public int getfile_id() {
-		return file_id;
+	public int getfileId() {
+		return fileId;
 	}
 	public void settime(Date time) {
 		this.time = time;
@@ -87,20 +87,20 @@ public class Message extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET  chat_id='%d' creator_id='%d' message_body='%s' link='%s' image_id='%d' file_id ='%d'".formatted(table(), this.chat_id, this.creator_id, this.message_body, this.link, this.image_id, this.file_id) + "time=" + gettime() + " WHERE id=" + getid() +";";
+			return "UPDATE %s SET  chat_id='%d' creator_id='%d' message_body='%s' link='%s' image_id='%d' file_id ='%d'".formatted(table(), this.chatId, this.creatorId, this.messageBody, this.link, this.imageId, this.fileId) + "time=" + gettime() + " WHERE id=" + getid() +";";
 		}
-		return "INSERT INTO %s (chat_id, creator_id, message_body, link, image_id, file_id, time) VALUES ('%d', '%d', '%s', '%s', '%d', '%d',".formatted(table(), this.chat_id, this.creator_id, this.message_body, this.link, this.image_id, this.file_id) + gettime() + ");";
+		return "INSERT INTO %s (chat_id, creator_id, message_body, link, image_id, file_id, time) VALUES ('%d', '%d', '%s', '%s', '%d', '%d',".formatted(table(), this.chatId, this.creatorId, this.messageBody, this.link, this.imageId, this.fileId) + gettime() + ");";
 	}
 
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
-			this.chat_id = rs.getInt("chat_id");
-			this.creator_id= rs.getInt("creator_id");
-			this.message_body = rs.getString("message_body");
+			this.chatId = rs.getInt("chat_id");
+			this.creatorId= rs.getInt("creator_id");
+			this.messageBody = rs.getString("message_body");
 			this.link = rs.getString("link");
-			this.image_id = rs.getInt("image_id");
-			this.file_id = rs.getInt("file_id");
+			this.imageId = rs.getInt("image_id");
+			this.fileId = rs.getInt("file_id");
 			this.time = rs.getTimestamp("time");
 			return true;
 		} catch (SQLException e) {
