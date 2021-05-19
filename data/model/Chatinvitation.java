@@ -12,13 +12,13 @@ import data.Database;
 public class Chatinvitation extends Dao{
 	static public String TABLE_NAME = "chat_invitation";
 	private int id;
-	protected int send_user_id;
-	protected int received_users_id;
-	public Chatinvitation(int id, int send_user_id, int received_users_id) {
+	protected int sendUserId;
+	protected int receivedUsersId;
+	public Chatinvitation(int id, int sendUserId, int receivedUsersId) {
 		super(id);
 		this.id = id;
-		this.send_user_id = send_user_id;
-		this.received_users_id = received_users_id;
+		this.sendUserId = sendUserId;
+		this.receivedUsersId = receivedUsersId;
 	}
 	public Chatinvitation() {
 		super();
@@ -29,17 +29,17 @@ public class Chatinvitation extends Dao{
 	public int getid() {
 		return id;
 	}
-	public void setsend_user_id(int send_user_id) {
-		this.send_user_id = send_user_id;
+	public void setsendUserId(int sendUserId) {
+		this.sendUserId = sendUserId;
 	}
-	public int getsend_user_id() {
-		return send_user_id;
+	public int getsendUserId() {
+		return sendUserId;
 	}
-	public void setreceived_users_id(int received_users_id) {
-		this.received_users_id = received_users_id;
+	public void setreceivedUsersId(int receivedUsersId) {
+		this.receivedUsersId = receivedUsersId;
 	}
-	public int getreceived_users_id() {
-		return received_users_id;
+	public int getreceivedUsersId() {
+		return receivedUsersId;
 	}
 	@Override
 	protected String table() {
@@ -48,16 +48,16 @@ public class Chatinvitation extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET  send_user_id='%d' received_users_id='%d' WHERE id='%d';".formatted(table(), this.send_user_id, this.received_users_id, this.id);
+			return "UPDATE %s SET  send_user_id='%d' received_users_id='%d' WHERE id='%d';".formatted(table(), this.sendUserId, this.receivedUsersId, this.id);
 		}
-		return "INSERT INTO %s (send_user_id, received_users_id) VALUES ('%d', '%d');".formatted(table(), this.send_user_id, this.received_users_id);
+		return "INSERT INTO %s (send_user_id, received_users_id) VALUES ('%d', '%d');".formatted(table(), this.sendUserId, this.receivedUsersId);
 	}
 
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
-			this.send_user_id = rs.getInt("send_user_id");
-			this.received_users_id = rs.getInt("received_users_id");
+			this.sendUserId = rs.getInt("send_user_id");
+			this.receivedUsersId = rs.getInt("received_users_id");
 			return true;
 		} catch (SQLException e) {
 			System.out.println("Ошибка при выборе данных из БД.");
