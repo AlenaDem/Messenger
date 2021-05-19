@@ -13,24 +13,24 @@ public class Users extends Dao{
 	static public String TABLE_NAME = "users";
 	private int id;
 	private String nickname;
-	private String hash_password;
+	private String hashPassword;
 	private String email;
-	private boolean is_admin;
-	private boolean message_notification;
-	private boolean friend_request_notification;
-	private boolean chat_invitation_notification;
-	protected int profile_photo_id;
-	public Users(int id, String nickname, String hash_password, String email, boolean is_admin, boolean message_notification, boolean friend_request_notification, boolean chat_invitation_notification, int profile_photo_id) {
+	private boolean isAdmin;
+	private boolean messageNotification;
+	private boolean friendRequestNotification;
+	private boolean chatInvitationNotification;
+	protected int profilePhotoId;
+	public Users(int id, String nickname, String hashPassword, String email, boolean isAdmin, boolean messageNotification, boolean friendRequestNotification, boolean chatInvitationNotification, int profilePhotoId) {
 		super(id);
 		this.id = id;
 		this.nickname = nickname;
-		this.hash_password = hash_password;
+		this.hashPassword = hashPassword;
 		this.email = email;
-		this.is_admin = is_admin;
-		this.message_notification = message_notification;
-		this.friend_request_notification = friend_request_notification;
-		this.chat_invitation_notification = chat_invitation_notification;
-		this.profile_photo_id = profile_photo_id;
+		this.isAdmin = isAdmin;
+		this.messageNotification = messageNotification;
+		this.friendRequestNotification = friendRequestNotification;
+		this.chatInvitationNotification = chatInvitationNotification;
+		this.profilePhotoId = profilePhotoId;
 	}
 	public  Users() {
 		super();
@@ -47,11 +47,11 @@ public class Users extends Dao{
 	public String getnickname() {
 		return nickname;
 	}
-	public void sethash_password(String hash_password) {
-		this.hash_password = hash_password;
+	public void sethashPassword(String hashPassword) {
+		this.hashPassword = hashPassword;
 	}
-	public String gethash_password() {
-		return hash_password;
+	public String gethashPassword() {
+		return hashPassword;
 	}
 	public void setemail(String email) {
 		this.email = email;
@@ -59,35 +59,35 @@ public class Users extends Dao{
 	public String getemail() {
 		return email;
 	}
-	public void setis_admin(boolean is_admin) {
-		this.is_admin = is_admin;
+	public void setisAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
-	public boolean getis_admin() {
-		return is_admin;
+	public boolean getisAdmin() {
+		return isAdmin;
 	}
-	public void setmessage_notification(boolean message_notification) {
-		this.message_notification = message_notification;
+	public void setmessageNotification(boolean messageNotification) {
+		this.messageNotification = messageNotification;
 	}
-	public boolean getmessage_notification() {
-		return message_notification;
+	public boolean getmessageNotification() {
+		return messageNotification;
 	}
-	public void setfriend_request_notification(boolean friend_request_notification) {
-		this.friend_request_notification = friend_request_notification;
+	public void setfriendRequestNotification(boolean friendRequestNotification) {
+		this.friendRequestNotification = friendRequestNotification;
 	}
-	public boolean getfriend_request_notification() {
-		return friend_request_notification;
+	public boolean getfriendRequestNotification() {
+		return friendRequestNotification;
 	}
-	public void setchat_invitation_notification(boolean chat_invitation_notification) {
-		this.chat_invitation_notification = chat_invitation_notification;
+	public void setchatInvitationNotification(boolean chatInvitationNotification) {
+		this.chatInvitationNotification = chatInvitationNotification;
 	}
-	public boolean getchat_invitation_notification() {
-		return chat_invitation_notification;
+	public boolean getchatInvitationNotification() {
+		return chatInvitationNotification;
 	}
-	public void setprofile_photo_id(int profile_photo_id) {
-		this.profile_photo_id = profile_photo_id;
+	public void setprofilePhotoId(int profilePhotoId) {
+		this.profilePhotoId = profilePhotoId;
 	}
-	public int getprofile_photo_id() {
-		return profile_photo_id;
+	public int getprofilePhotoId() {
+		return profilePhotoId;
 	}
 	@Override
 	protected String table() {
@@ -96,21 +96,21 @@ public class Users extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET nickname='%s' hash_password='%s' email='%s' is_admin='%b' message_notification='%b' friend_request_notification='%b' chat_invitation_notification='%b' profile_photo_id='%d' WHERE id=%d;".formatted(table(), this.nickname, this.hash_password, this.email, this.is_admin, this.message_notification, this.friend_request_notification, this.chat_invitation_notification, this.profile_photo_id, this.id);
+			return "UPDATE %s SET nickname='%s' hash_password='%s' email='%s' is_admin='%b' message_notification='%b' friend_request_notification='%b' chat_invitation_notification='%b' profile_photo_id='%d' WHERE id=%d;".formatted(table(), this.nickname, this.hashPassword, this.email, this.isAdmin, this.messageNotification, this.friendRequestNotification, this.chatInvitationNotification, this.profilePhotoId, this.id);
 		}
-		return "INSERT INTO %s (nickname, hash_password, email, is_admin, message_notification, friend_request_notification, chat_invitation_notification, profile_photo_id) VALUES ('%s', '%s', '%s', '%b', '%b', '%b', '%b','%d');".formatted(table(), this.nickname, this.hash_password, this.email, this.is_admin, this.message_notification, this.friend_request_notification, this.chat_invitation_notification, this.profile_photo_id);
+		return "INSERT INTO %s (nickname, hash_password, email, is_admin, message_notification, friend_request_notification, chat_invitation_notification, profile_photo_id) VALUES ('%s', '%s', '%s', '%b', '%b', '%b', '%b','%d');".formatted(table(), this.nickname, this.hashPassword, this.email, this.isAdmin, this.messageNotification, this.friendRequestNotification, this.chatInvitationNotification, this.profilePhotoId);
 	}
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
 			this.nickname= rs.getString("nickname");
-			this.hash_password = rs.getString("hash_password");
+			this.hashPassword = rs.getString("hash_password");
 			this.email = rs.getString("email");
-			this.is_admin = rs.getBoolean("is_admin");
-			this.message_notification = rs.getBoolean("message_notification");
-			this.friend_request_notification = rs.getBoolean("friend_request_notification");
-			this.chat_invitation_notification = rs.getBoolean("chat_invitation_notification");
-			this.profile_photo_id = rs.getInt("profile_photo_id");
+			this.isAdmin = rs.getBoolean("is_admin");
+			this.messageNotification = rs.getBoolean("message_notification");
+			this.friendRequestNotification = rs.getBoolean("friend_request_notification");
+			this.chatInvitationNotification = rs.getBoolean("chat_invitation_notification");
+			this.profilePhotoId = rs.getInt("profile_photo_id");
 			return true;
 		} catch (SQLException e) {
 			System.out.println("Ошибка при выборе данных из БД.");
