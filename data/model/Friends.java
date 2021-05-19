@@ -12,14 +12,14 @@ import data.Database;
 public class Friends extends Dao{
 	static public String TABLE_NAME = "friends";
 	private int id;
-	protected int user_id;
-	protected int contact_id;
-	public Friends(int id, int user_id,int contact_id) {
+	protected int userId;
+	protected int contactId;
+	public Friends(int id, int userId,int contactId) {
 		
 		super(id);
 		this.id = id;
-		this.user_id = user_id;
-		this.contact_id = contact_id;
+		this.userId = userId;
+		this.contactId = contactId;
 	}
 	public  Friends() {
 		super();
@@ -30,17 +30,17 @@ public class Friends extends Dao{
 	public int getid() {
 		return id;
 	}
-	public void setcontact_id(int contact_id) {
-		this.contact_id = contact_id;
+	public void setcontactId(int contactId) {
+		this.contactId = contactId;
 	}
-	public int getcontact_id() {
-		return contact_id;
+	public int getcontactId() {
+		return contactId;
 	}
-	public void setuser_id(int user_id) {
-		this.user_id = user_id;
+	public void setuserId(int userId) {
+		this.userId = userId;
 	}
-	public int getuser_id() {
-		return user_id;
+	public int getuserId() {
+		return userId;
 	}
 	@Override
 	protected String table() {
@@ -49,16 +49,16 @@ public class Friends extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET  user_id='%d' contact_id='%d' WHERE id='%d';".formatted(table(), this.user_id, this.contact_id, this.id);
+			return "UPDATE %s SET  user_id='%d' contact_id='%d' WHERE id='%d';".formatted(table(), this.userId, this.contactId, this.id);
 		}
-		return "INSERT INTO %s (user_id, contact_id) VALUES ('%d', '%d');".formatted(table(), this.user_id, this.contact_id);
+		return "INSERT INTO %s (user_id, contact_id) VALUES ('%d', '%d');".formatted(table(), this.userId, this.contactId);
 	}
 
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
-			this.user_id = rs.getInt("user_id");
-			this.contact_id = rs.getInt("contact_id");
+			this.userId = rs.getInt("user_id");
+			this.contactId = rs.getInt("contact_id");
 			return true;
 		} catch (SQLException e) {
 			System.out.println("Ошибка при выборе данных из БД.");
