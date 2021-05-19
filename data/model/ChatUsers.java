@@ -12,16 +12,16 @@ import data.Database;
 public class ChatUsers extends Dao{
 	static public String TABLE_NAME = "chat_users";
 	private int id;
-	protected int chat_id;
-	protected int user_id;
-	private boolean is_blocked;
+	protected int chatId;
+	protected int userId;
+	private boolean isBlocked;
 	private String title;
-	public ChatUsers(int id, int chat_id, int user_id, boolean is_blocked, String title) {
+	public ChatUsers(int id, int chatId, int userId, boolean isBlocked, String title) {
 		super(id);
 		this.id = id;
-		this.chat_id = chat_id;
-		this.user_id = user_id;
-		this.is_blocked = is_blocked;
+		this.chatId = chatId;
+		this.userId = userId;
+		this.isBlocked = isBlocked;
 		this.title = title;
 	}
 	public  ChatUsers() {
@@ -33,23 +33,23 @@ public class ChatUsers extends Dao{
 	public int getid() {
 		return id;
 	}
-	public void setchat_id(int chat_id) {
-		this.chat_id = chat_id;
+	public void setchatId(int chatId) {
+		this.chatId = chatId;
 	}
-	public int getchat_id() {
-		return chat_id;
+	public int getchatId() {
+		return chatId;
 	}
-	public void setuser_id(int user_id) {
-		this.user_id = user_id;
+	public void setuserId(int userId) {
+		this.userId = userId;
 	}
-	public int getuser_id() {
-		return user_id;
+	public int getuserId() {
+		return userId;
 	}
-	public void setis_blocked(boolean is_blocked) {
-		this.is_blocked = is_blocked;
+	public void setisBlocked(boolean isBlocked) {
+		this.isBlocked = isBlocked;
 	}
-	public boolean getis_blocked() {
-		return is_blocked;
+	public boolean getisBlocked() {
+		return isBlocked;
 	}
 	public void settitle(String title) {
 		this.title = title;
@@ -64,17 +64,17 @@ public class ChatUsers extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET chat_id='%d' user_id='%d' is_blocked='%b' title='%s' WHERE id='%d';".formatted(table(), this.chat_id, this.user_id, this.is_blocked, this.title, this.id);
+			return "UPDATE %s SET chat_id='%d' user_id='%d' is_blocked='%b' title='%s' WHERE id='%d';".formatted(table(), this.chatId, this.userId, this.isBlocked, this.title, this.id);
 		}
-		return "INSERT INTO %s (chat_id, user_id, is_blocked, title) VALUES ('%d', '%d', '%b', '%s');".formatted(table(), this.chat_id, this.user_id, this.is_blocked, this.title);
+		return "INSERT INTO %s (chat_id, user_id, is_blocked, title) VALUES ('%d', '%d', '%b', '%s');".formatted(table(), this.chatId, this.userId, this.isBlocked, this.title);
 	}
 
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
-			this.chat_id = rs.getInt("chat_id");
-			this.user_id = rs.getInt("user_id");
-			this.is_blocked = rs.getBoolean("is_blocked");
+			this.chatId = rs.getInt("chat_id");
+			this.userId = rs.getInt("user_id");
+			this.isBlocked = rs.getBoolean("is_blocked");
 			this.title = rs.getString("title");
 			return true;
 		} catch (SQLException e) {
@@ -101,3 +101,4 @@ public class ChatUsers extends Dao{
 		return new ArrayList<ChatUsers>();
 	}
 }
+
