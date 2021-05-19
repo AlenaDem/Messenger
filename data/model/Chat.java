@@ -13,13 +13,13 @@ public class Chat extends Dao{
 	static public String TABLE_NAME = "Chat";
 	private int id;
 	private int type;
-	protected int creator_id;
+	protected int creatorId;
 	private String title;
-	public Chat(int id, int type, int creator_id, String title) {
+	public Chat(int id, int type, int creatorId, String title) {
 		super(id);
 		this.id = id;
 		this.type = type;
-		this.creator_id = creator_id;
+		this.creatorId = creatorId;
 		this.title = title;
 	}
 	public  Chat() {
@@ -37,11 +37,11 @@ public class Chat extends Dao{
 	public int gettype() {
 		return type;
 	}
-	public void setcreator_id(int creator_id) {
-		this.creator_id = creator_id;
+	public void setcreatorId(int creatorId) {
+		this.creatorId = creatorId;
 	}
 	public int getcreator() {
-		return creator_id;
+		return creatorId;
 	}
 	public void setemail(String title) {
 		this.title = title;
@@ -56,16 +56,16 @@ public class Chat extends Dao{
 	@Override
 	protected String createSaveQuery() {
 		if (this.id != 0) {
-			return "UPDATE %s SET type='%d' creator_id='%d' title='%s' WHERE id=%d;".formatted(table(), this.type, this.creator_id, this.title, this.id);
+			return "UPDATE %s SET type='%d' creator_id='%d' title='%s' WHERE id=%d;".formatted(table(), this.type, this.creatorId, this.title, this.id);
 		}
-		return "INSERT INTO %s (type, creator_id, title,) VALUES ('%d', '%d', '%s');".formatted(table(), this.type, this.creator_id, this.title);
+		return "INSERT INTO %s (type, creator_id, title,) VALUES ('%d', '%d', '%s');".formatted(table(), this.type, this.creatorId, this.title);
 	}
 
 	@Override
 	protected boolean processSelectResult(ResultSet rs) {
 		try {
 			this.type = rs.getInt("type");
-			this.creator_id = rs.getInt("creator_id");
+			this.creatorId = rs.getInt("creator_id");
 			this.title = rs.getString("title");
 			return true;
 		} catch (SQLException e) {
