@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,20 +18,48 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
+	
+	@Column(nullable = false)
 	private String username;
+	
+	@Column(nullable = false)
 	private String password;
+	
     @ManyToOne
     private Role role;
     
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<ChatMessage> messages;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    Set<ChatUserRelation> chats;
 	
+	public Set<ChatMessage> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Set<ChatMessage> messages) {
+		this.messages = messages;
+	}
+
+	public Set<ChatUserRelation> getChats() {
+		return chats;
+	}
+
+	public void setChats(Set<ChatUserRelation> chats) {
+		this.chats = chats;
+	}
+
 	public User() {
 	}
 

@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.Messenger.Models.ChatRoom;
 import com.Messenger.Models.ChatType;
+import com.Messenger.Models.ChatUserRelation;
 import com.Messenger.Models.Role;
 import com.Messenger.Models.User;
 import com.Messenger.Repo.ChatMessageRepository;
 import com.Messenger.Repo.ChatRoomRepository;
 import com.Messenger.Repo.ChatTypeRepository;
+import com.Messenger.Repo.ChatUserRelationRepository;
 import com.Messenger.Repo.RoleRepository;
 import com.Messenger.Repo.UserRepository;
 import com.Messenger.Services.UserService;
@@ -19,20 +21,12 @@ import com.Messenger.Services.UserService;
 @Controller
 public class MainController {
 
-	@Autowired
-	private UserRepository ur;
-
-	@Autowired
-	private RoleRepository rr;
-	
-	@Autowired
-	private ChatRoomRepository crr;
-	
-	@Autowired
-	private ChatTypeRepository ctr;
-
-	@Autowired
-	private UserService userService;
+	@Autowired private UserRepository ur;
+	@Autowired private RoleRepository rr;
+	@Autowired private ChatRoomRepository crr;
+	@Autowired private ChatTypeRepository ctr;
+	@Autowired private UserService userService;
+	@Autowired private ChatUserRelationRepository chatUserRepo;
 
 	@RequestMapping("/users")
 	public String users(Model model) {
@@ -48,7 +42,7 @@ public class MainController {
 
 	@RequestMapping("/demo")
 	public String demo() {
-		System.out.println("Demo create");
+
 		Role role = new Role("ROLE_USER");
 		rr.save(role);
 		var user = new User("user", "1", role);
@@ -59,12 +53,19 @@ public class MainController {
 		user = new User("admin", "1", role);
 		userService.saveUser(user, role);
 		
-		var chatType = new ChatType("PUBLIC");
+		var chatType = new ChatType("PERSONAL");
 		ctr.save(chatType);
-		
-		var chatRoom = new ChatRoom("Комната 123", chatType);
+		chatType = new ChatType("PRIVATE");
+		ctr.save(chatType);
+		chatType = new ChatType("PUBLIC");
+		ctr.save(chatType);
+		var chatRoom = new ChatRoom("Комната Чипсика", chatType);
 		crr.save(chatRoom);
+		
+		var rel = new ChatUserRelation(chatRoom, user);
+		chatUserRepo.save(rel);
 
+		System.out.println("Demo db created");
 		return "redirect:/";
 	}
 

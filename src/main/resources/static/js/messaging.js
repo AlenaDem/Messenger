@@ -3,51 +3,93 @@ let $chatHistoryList;
 let $sendMsgButton;
 let $msgTextArea;
 
+var recieveTemplate = Handlebars.compile($("#message-template").html());
+var sendTemplate = Handlebars.compile($("#my-message-template").html());
+var imageId = 0;
+
+init();
+
 function init() {
     cacheDOM();
-    bindEvents();
+    initListeners();
 }
 
-function bindEvents() {
+function initListeners() {
     $sendMsgButton.on('click', addMessage.bind(this));
     $msgTextArea.on('keyup', addMessageEnter.bind(this));
 }
 
 function cacheDOM() {
     $chatHistory = $('.chat-history');
-    $sendMsgButton = $('#sendBtn');
+    $sendMsgButton = $('#send-btn');
     $msgTextArea = $('#message-to-send');
-    $chatHistoryList = $chatHistory.find('ul');
+    $chatHistoryList = $('#msg-list-ul');
 }
 
-function renderIncomingMessage(message, userName) {
+function renderMessages(messages) {
+    $chatHistoryList.html('');
+    messages.forEach(msg => {
+        renderMessageCloud(msg);
+    });
     scrollToBottom();
-    
-    var templateResponse = Handlebars.compile($("#message-response-template").html());
-    var contextResponse = {
-        inMessage: message,
-        time: getCurrentTime(),
-        userName: userName
-    };
+}
 
-    setTimeout(function () {
-        $chatHistoryList.append(templateResponse(contextResponse));
-        scrollToBottom();
-    }.bind(this), 1500);
+function renderMessageCloud(msg) {
+    var context = {
+        id: msg.id,
+        time: msg.time,
+        username: msg.username,
+        message: msg.text,
+        type: msg.type,
+        filename: msg.type === "file" ? msg.filename : "",
+        imagename: msg.type === "image" ? msg.filename : ""
+    };
+    $chatHistoryList.append(generateTemplate(context));
+    scrollToBottom();
+}
+
+function generateTemplate(context) {
+    var template = (context.username === currentUser ? sendTemplate(context) : recieveTemplate(context));
+    var wrapper= document.createElement('div');
+    wrapper.innerHTML = template;
+    if (context.type == 'text') {
+        var img = $(wrapper).find('.image-holder');
+        img.remove();
+        var file = $(wrapper).find('.file-holder');
+        file.remove(); 
+    }
+    if (context.type == 'image') {
+        var file = $(wrapper).find('.file-holder');
+        file.remove();
+
+        var img = $(wrapper).find('img')[0];
+        img.onload = function() {
+            scrollToBottom();
+        };
+    }
+    if (context.type == 'file') {
+        var img = $(wrapper).find('.image-holder');
+        img.remove(); 
+    }
+
+    return wrapper.innerHTML;
 }
 
 function sendMessage(message) {
-    sendMsg(message);
-    scrollToBottom();
-    if (message.trim() !== '') {
-        var template = Handlebars.compile($("#message-template").html());
-        var context = {
-            outMessage: message,
-            time: getCurrentTime(),
-        };
+    if (currentChat === null)
+        return;
 
-        $chatHistoryList.append(template(context));
-        scrollToBottom();
+    if (fileReadyToSend == false) {
+        window.setTimeout(sendMessage(message), 100);
+    }
+    else {
+        stompClient.send("/app/chat/message/" + currentChat, {}, JSON.stringify({
+            text: message,
+            file_name: uploadedFileName,
+            file_type: uploadedFileType,
+            file_content: uploadedFileContent
+        }));
+        resetUploadFile();
         $msgTextArea.val('');
     }
 }
@@ -56,21 +98,12 @@ function scrollToBottom() {
     $chatHistory.scrollTop($chatHistory[0].scrollHeight);
 }
 
-function getCurrentTime() {
-    //return new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
-    return new Date().toISOString().slice(0,10);
-}
-
 function addMessage() {
     sendMessage($msgTextArea.val());
 }
 
 function addMessageEnter(event) {
-    // enter was pressed
     if (event.keyCode === 13) {
         addMessage();
     }
 }
-
-init();
-

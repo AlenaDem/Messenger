@@ -1,7 +1,5 @@
 package com.Messenger.Services;
 
-import java.util.Collections;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -19,8 +17,6 @@ import com.Messenger.Repo.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
-    @PersistenceContext
-    private EntityManager em;
     @Autowired
     UserRepository userRepository;
     @Autowired

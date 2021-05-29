@@ -1,8 +1,10 @@
-<html lang="en">
+<html>
+
 <head>
     <meta charset="UTF-8">
     <title>Чат</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="js/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js"></script>
     <!--    libs for stomp and sockjs-->
@@ -10,78 +12,168 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <!--    end libs for stomp and sockjs-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"
-          type="text/css">
+        type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <link href="css/chat.css" rel="stylesheet">
+    <link href="css/chat_creation.css" rel="stylesheet">
+    <link href="css/chat_search.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="container clearfix">
-
-    <div class="chat-list" id="chat-list">
-        <div class="search">
-            <input id="chatName" placeholder="Search" type="text"/>
-            <button onclick="registration()">Enter the chat</button>
-            <button onclick="fetchChats()">Обновить</button>
-            <button onclick="init()">Подключиться</button>
+    <div class="container clearfix">
+        <div class="chat-list" id="chat-list">
+            <div class="search">
+                <input id="chatName" placeholder="Search" type="text" />
+                <button id="create-chat-btn">Создать чат</button>
+                <button id="find-chat-btn">Найти чат</button>
+            </div>
+            <ul id="chat-list-ul"></ul>
         </div>
-        <ul class="list" id="chatList"></ul>
+
+        <div class="chat" id="chat-box">
+            <!-- Заголовок -->
+            <div class="chat-header clearfix">
+                <div class="chat-about">
+                    <div class="chat-with" id="chat-title"></div>
+                    <div class="chat-num-messages"></div>
+                </div>
+                <button id="leave-btn">Выйти</button>
+            </div>
+
+            <!-- Сообщения -->
+            <div class="chat-history">
+                <ul id="msg-list-ul"></ul>
+            </div>
+
+            <!-- Текст -->
+            <div class="chat-message clearfix">
+                <textarea id="message-to-send" name="message-to-send" placeholder="Введите сообщение..." rows="3"></textarea>
+                <input type="file" id="upload">
+                <button id="send-btn">Отправить</button>
+            </div>
+        </div>
     </div>
 
-    <div class="chat">
-        <div class="chat-header clearfix">
-            <div class="chat-about">
-                <div class="chat-with" id="selectedChatId"></div>
-                <div class="chat-num-messages"></div>
-            </div>
-            <i class="fa fa-star"></i>
-        </div> <!-- end chat-header -->
+    <!-- Шаблоны -->
 
-        <div class="chat-history">
-            <ul>
-
-            </ul>
-
-        </div> <!-- end chat-history -->
-
-        <div class="chat-message clearfix">
-            <textarea id="message-to-send" name="message-to-send" placeholder="Type your message" rows="3"></textarea>
-
-            <i class="fa fa-file-o"></i>
-            <i class="fa fa-file-image-o"></i>
-
-            <button id="sendBtn">Отправить</button>
-
-        </div> <!-- end chat-message -->
-
-    </div> <!-- end chat -->
-
-</div> <!-- end container -->
-
-<script id="message-template" type="text/x-handlebars-template">
+<script id="my-message-template" type="text/x-handlebars-template">
     <li class="clearfix">
         <div class="message-data align-right">
-            <span class="message-data-time">{{time}}</span>
-            <span class="message-data-name">Я</span> <i class="fa fa-circle me"></i>
+            <span class="message-data-time"> {{time}} </span>
+            <span class="message-data-name"> {{username}} </span>
         </div>
-        <div class="message other-message float-right">
-            {{outMessage}}
+        <div class="message my-message float-right">
+            {{message}}
+            <div class="image-holder" id="image-holder-{{id}}">
+                <img src="files/{{imagename}}">
+            </div>
+            <div class="file-holder" id="file-holder-{{id}}" onclick="location.href='files/{{filename}}';">
+                <img src="images/attachment.png">
+                Файл: {{filename}}
+            </div>
         </div>
     </li>
 </script>
 
-<script id="message-response-template" type="text/x-handlebars-template">
+<script id="message-template" type="text/x-handlebars-template">
     <li>
         <div class="message-data">
-            <span class="message-data-name"><i class="fa fa-circle online"></i> {{userName}}</span>
-            <span class="message-data-time">{{time}}</span>
+            <span class="message-data-name"> {{username}} </span>
+            <span class="message-data-time"> {{time}} </span>
         </div>
-        <div class="message my-message">
-            {{inMessage}}
+        <div class="message other-message">
+            {{message}}
+            <div class="image-holder" id="image-holder-{{id}}">
+                <img src="files/{{imagename}}">
+            </div>
+            <div class="file-holder" id="file-holder-{{id}}" onclick="location.href='files/{{filename}}';">
+                <img src="images/attachment.png">
+                Файл: {{filename}}
+            </div>
         </div>
     </li>
 </script>
 
-<script src="js/messaging.js"></script>
-<script src="js/chat.js"></script>
+<script id="chat-tile-template" type="text/x-handlebars-template">
+    <li>
+        <div class="chat-tile" id="chat-tile-{{id}}" onclick="selectChat('{{id}}','{{name}}')">
+            <div class="chat-name">{{name}}</div>
+            <span class="newMessageIndicator"> 🔶 </span>
+        </div>
+    </li>
+</script>
+
+    <!-- Окно создания комнаты -->
+    <div id="create-chat" class="create-chat">
+
+        <div class="create-chat-content">
+            <span class="close-create-chat">&times;</span>
+            <p>Создать новый чат</p>
+
+            <form class="form" name="chat-creation-form">
+                <div class="form-group">
+                    <label for="form-chat-name">Имя чата: </label>
+                    <input id="form-chat-name" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="form-chat-type">Тип чата: </label>
+                    <select id="form-chat-type">
+                        <option value="PUBLIC">Общий чат</option>
+                        <option value="PRIVATE">Закрытый чат</option>
+                        <option value="PERSONAL">Личный чат</option>
+                    </select>
+                </div>
+                <div class="form-group" id="username-field">
+                    <label for="form-chat-user">Пользователь: </label>
+                    <input id="form-chat-user" type="text"><br>
+                </div>
+                <input type="button" value="Создать" onclick="createChat()">
+        </div>
+        </form>
+    </div>
+<!-- Окно поиска комнат -->
+<script id="find-chat-tile-template" type="text/x-handlebars-template">
+    <li>
+        <div class="find-chat-tile" id="find-chat-tile-{{id}}">
+            <span class="find-chat-name">{{name}}</span>
+            <span class="find-chat-count">Участников: {{count}}</span>
+            <button id="enter-chat-btn"onclick="joinChat('{{id}}')">Войти</button>
+        </div>
+    </li>
+</script>
+
+    <div id="find-chat" class="find-chat">
+        <div class="find-chat-content">
+            <span class="close-find-chat">&times;</span>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Имя чата</span>
+                </div>
+                <input type="text" id="find-chat-input" aria-label="Имя чата" class="form-control"
+                    aria-describedby="inputGroup-sizing-default">
+                <button id="start-find-chat">Найти</button>
+            </div>
+            <div class="found-chat">
+                <ul id="found-chat-ul"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/messaging.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/chat_creation.js"></script>
+    <script src="js/chat_search.js"></script>
+    <script src="js/file_loader.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

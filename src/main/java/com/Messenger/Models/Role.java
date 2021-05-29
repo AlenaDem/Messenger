@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,14 +17,19 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    
+    @Column(nullable = false)
     private String name;
     
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
     private Set<User> users;
 
