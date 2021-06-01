@@ -44,7 +44,15 @@ public String getProfile(Model model, @AuthenticationPrincipal User user) {
     model.addAttribute("username", user.getUsername());
     return "profile";
 }
-
+//example http://localhost:8081/user?user=admin
+@RequestMapping(value = "/user", method = RequestMethod.GET, params = "user")
+public ModelAndView showProfileByUsername(HttpServletRequest request)
+{
+    ModelAndView model = new ModelAndView("user");
+    User user = userRepo.findByUsername(request.getParameter("user"));
+    model.addObject("username", user.getUsername()); 
+    return model;
+}
 /*@PostMapping("profile")
 public String updateProfile(
         @AuthenticationPrincipal User user,
