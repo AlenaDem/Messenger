@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<ChatMessage> messages;
     
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<User> friends;
+	
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     Set<ChatUserRelation> chats;
@@ -129,5 +132,13 @@ public class User implements UserDetails {
 		res.add(role);
 		return res;
 	}
+		    
+	public void setFriends(Set<User> friends) {
+	        this.friends = friends;
+	    }
+
+	public Set<User> getFriends() {
+	        return friends;
+	    }
 
 }
