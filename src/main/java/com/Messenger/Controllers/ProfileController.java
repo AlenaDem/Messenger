@@ -64,4 +64,71 @@ public String updateProfile(
 
     return "redirect:/user/profile";
 }*/
+		@GetMapping("/fetchFriends")
+	@ResponseBody 
+	public ArrayList<FriendInfo> fetchFriends(Principal principal) {
+		var friends = new ArrayList<FriendInfo>();
+		var user = userRepo.findByUsername(principal.getName());
+		if (user == null)
+			return friends;
+		
+		for (var pendFriend : friendService.invites(user))
+			friends.add(new FriendInfo(pendFriend));
+		
+		for (var confFriend : friendService.confirmedFriends(user)) {
+			var info = new FriendInfo(confFriend);
+			info.confirmed = true;
+			friends.add(info);
+		}
+		
+		System.out.println("Found %d friends for %s".formatted(friends.size(), user.getUsername()));
+		return friends;
+	}
+	
+    @PostMapping("/addfriend/{userId}")
+    @ResponseBody
+    public void addFriend(@PathVariable("userId") Long userId, Model model, Principal principal) {
+		var fromUser = userRepo.findByUsername(principal.getName());
+		if (fromUser == null)
+			return;
+		
+		if (!userRepo.existsById(userId))
+			return;
+		var toUser = userRepo.findById(userId).get();
+		
+		friendService.addFriend(fromUser, toUser);
+        System.out.println("%s sent friend invite to %s".formatted(fromUser.getUsername(), toUser.getUsername()));
+    }
+    
+    @PostMapping("/removefriend/{userId}")
+    @ResponseBody
+    public void removeFriend(@PathVariable("userId") Long userId, Model model, Principal principal) {
+		var fromUser = userRepo.findByUsername(principal.getName());
+		if (fromUser == null)
+			return;
+		
+		if (!userRepo.existsById(userId))
+			return;
+		var toUser = userRepo.findById(userId).get();
+		
+		friendService.removeFriend(fromUser, toUser);
+        System.out.println("%s removed %s from friends".formatted(fromUser.getUsername(), toUser.getUsername()));
+    }
+    
+    @PostMapping("/confirmfriend/{userId}")
+    @ResponseBody
+    public void confirmFriend(@PathVariable("userId") Long userId, Model model, Principal principal) {
+		var toUser = userRepo.findByUsername(principal.getName());
+		if (toUser == null)
+			return;
+		
+		if (!userRepo.existsById(userId))
+			return;
+		var fromUser = userRepo.findById(userId).get();
+		
+		friendService.confirm(fromUser, toUser);
+        System.out.println("%s confirmed friend invite from %s".formatted(toUser.getUsername(), fromUser.getUsername()));
+    }
+}
+
 }
