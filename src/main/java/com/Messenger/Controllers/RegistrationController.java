@@ -62,7 +62,7 @@ public class RegistrationController {
         	System.out.println("User %s confirms registration".formatted(user.getUsername()));
         }
         
-        return "redirect:" + Settings.URL + "/login";
+        return "redirect:/";
     }
     
     public void sendConfirmationEmail(User user) {
