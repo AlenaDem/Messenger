@@ -61,33 +61,7 @@
                 </div>
             </div>
         </div>
-        <div th:if="${myprofile}" class="col-md-12 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Список друзей:</h5>
-                    <div id="profile-friends" class="container friends">
-                        <div class="container conf-friends">
-                            <ul class="list-group" id="conf-friends-ul"></ul>
-                        </div>
-                        <div class="container pend-friends">
-                            <ul class="list-group" id="pend-friends-ul"></ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-
-
-
-    <script id="profile-friend-template" type="text/x-handlebars-template">
-        <li class="list-group-item">
-            <div class="profile-user-tile" id="profile-user-tile-{{id}}">
-                <span class="profile-user-name">{{username}}</span>
-                <button class="btn btn-secondary float-right" id="friend-btn"></button>
-            </div>
-        </li>
-    </script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -99,6 +73,7 @@
     </script>
 
     <script src="/js/profile.js"></script>
+
 
 </body>
 

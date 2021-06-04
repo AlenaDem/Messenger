@@ -1,6 +1,7 @@
 $("#find-chat-btn").click(function () {
     $("#find-chat").css('display', 'block');
     $("#found-chat-ul").html('');
+    findChat();
 });
 
 $('.close-find-chat').click(function () {
@@ -11,6 +12,10 @@ $('#start-find-chat').on("click", findChat);
 
 function findChat() {
     var chat_name = document.getElementById('find-chat-input').value.toString();
+
+    if (chat_name == "")
+        chat_name = "*";
+
     $.get(url + "/getChats/" + chat_name, function (chats) {
         $chatList = $('#found-chat-ul');
         $chatList.html('');

@@ -36,6 +36,7 @@ import com.Messenger.Repo.ChatTypeRepository;
 import com.Messenger.Repo.ChatUserRelationRepository;
 import com.Messenger.Repo.RoleRepository;
 import com.Messenger.Repo.UserRepository;
+import com.Messenger.Services.FriendshipService;
 import com.Messenger.Services.UserChatRelationService;
 import com.Messenger.Services.UserService;
 
@@ -206,13 +207,13 @@ public class ChatController {
 	}
 	
 	@GetMapping("/getChats/{name}")
-	public ArrayList<ChatInfo> fetchChats(@PathVariable("name") String name, Principal principal) {
+	public ArrayList<ChatInfo> getChats(@PathVariable("name") String name, Principal principal) {
 		var chats = new ArrayList<ChatInfo>();
 		var user = userRepo.findByUsername(principal.getName());
 		if (user == null)
 			return chats;
 		
-		// if admin -> private
+		// if admin
 		
 		for (var chat : chatRepo.findAll()) {
 			var chatInfo = new ChatInfo(chat.getId(), chat.getName(), chat.getChats().size());
@@ -229,6 +230,27 @@ public class ChatController {
 		}
 		System.out.println("Chats contains %s in names: %d".formatted(name, chats.size()));
 		return chats;	
+	}
+	
+	@GetMapping("/getUsers/{name}")
+	public ArrayList<UserInfo> getUsers(@PathVariable("name") String name, Principal principal) {
+		var users = new ArrayList<UserInfo>();
+		var currentUser = userRepo.findByUsername(principal.getName());
+		if (currentUser == null)
+			return users;
+		
+		for (var user : userRepo.findAll()) {
+			var userInfo = new UserInfo();
+			userInfo.id = user.getId();
+			userInfo.username = user.getUsername();
+			userInfo.managable = false;
+			
+			if (user.getUsername().toLowerCase().contains(name) || name.equals("*"))
+				users.add(userInfo);
+		}
+		
+		System.out.println("Users contains %s in name: %d".formatted(name, users.size()));
+		return users;	
 	}
 	
 	@MessageMapping("/chat/create")
@@ -399,7 +421,7 @@ public class ChatController {
 		if (user == null)
 			return response;
 		
-		if (ucrService.userInChat(user.getUsername(), chatId))
+		if (!ucrService.userInChat(user.getUsername(), chatId))
 			return response;
 		
 		response.put("can_delete", userService.userCanManageChat(user, chat));

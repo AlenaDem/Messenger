@@ -97,6 +97,11 @@ public class MainController {
 		return "profile";
 	}
 	
+	@RequestMapping("/friends")
+	public String friends() {
+		return "friends";
+	}
+	
 	@RequestMapping("/logout")
 	public String logout() {
 		return "logout";

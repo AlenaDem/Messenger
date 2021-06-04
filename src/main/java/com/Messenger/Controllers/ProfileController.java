@@ -89,6 +89,7 @@ public class ProfileController {
     }
 	
     @RequestMapping(value="/avatar", method=RequestMethod.POST)
+	@ResponseBody
     public String setAvatar(@RequestParam("avatar") MultipartFile avatar, Model model, Principal principal){
         if (!avatar.isEmpty()) {
             try {

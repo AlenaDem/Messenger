@@ -1,5 +1,5 @@
 /* The Modal (background) */
-.create-chat {
+.create-chat, .select-friend {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -14,7 +14,8 @@
   }
   
   /* Modal Content */
-  .create-chat-content {
+  .create-chat-content,
+  .select-friend-content {
     background-color: #444753;
     margin: auto;
     padding: 20px;
@@ -23,7 +24,8 @@
   }
   
   /* The Close Button */
-  .close-create-chat {
+  .close-create-chat,
+  .close-select-friend {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
@@ -31,7 +33,9 @@
   }
   
   .close-create-chat:hover,
-  .close-create-chat:focus {
+  .close-create-chat:focus,
+  .close-select-friend:hover,
+  .close-select-friend:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;

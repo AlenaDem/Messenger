@@ -22,11 +22,30 @@
                 </div>
                 <div class="form-group" id="username-field">
                     <label for="form-chat-user">Пользователь: </label>
-                    <input class="form-control col-5" maxlength="30" id="form-chat-user" type="text"><br>
+                    <input class="form-control col-5" maxlength="30" id="form-chat-user" type="text">
+                    <input type="button" class="btn btn-light" id="select-friend-btn" value="Друзья" onclick="selectFriend()">
                 </div>
                 <input type="button" class="btn btn-light" value="Создать" onclick="createChat()">
         </div>
         </form>
+    </div>
+
+    <script id="select-friend-template" type="text/x-handlebars-template">
+        <li>
+            <div class="select-friend-tile" id="select-friend-tile-{{id}}">
+                <span class="select-friend-name">{{username}}</span>
+                <button class="btn btn-light pull-right" id="confirm-select-btn" onclick="friendSelected('{{username}}')">Выбрать</button>
+            </div>
+        </li>
+    </script>
+
+    <div id="select-friend" class="select-friend">
+        <div class="select-friend-content col-6 align-center">
+            <span class="close-select-friend">&times;</span>
+            <div class="select-friend-wrapper">
+                <ul id="select-friend-ul"></ul>
+            </div>
+        </div>
     </div>
 
     <script src="js/chat_creation.js"></script>

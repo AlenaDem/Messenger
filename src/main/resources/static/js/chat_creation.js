@@ -7,6 +7,10 @@ $('.close-create-chat').click(function () {
     $("#create-chat").css('display', 'none');
 });
 
+$('.close-select-friend').click(function () {
+  $("#select-friend").css('display', 'none');
+});
+
 $("#form-chat-type").change(function() {
     if ($(this).val() == "PERSONAL") {
       $('#username-field').show();
@@ -21,6 +25,12 @@ function createChat() {
     var chat_type = document.getElementById('form-chat-type').value;
     var chat_user = document.getElementById('form-chat-user').value;
 
+    if (chat_name == "")
+      return;
+
+    if (chat_type == "PERSONAL" && chat_user == "")
+      return;
+
     stompClient.send("/app/chat/create", {}, JSON.stringify(
         {
         chatname: chat_name,
@@ -33,4 +43,27 @@ function createChat() {
 
 function newChatCreated(response) {
     fetchChats();
+}
+
+function selectFriend() {
+  jQuery.get(url + "/fetchFriends", function (friends) {
+    $("#select-friend").css('display', 'block');
+    $friends = $('#select-friend-ul');
+    $friends.html('');
+    var friendTemplate = Handlebars.compile($("#select-friend-template").html());
+
+    friends.forEach(friend => {
+        var context = {
+            id: friend.id,
+            username: friend.name,
+        };
+        if (friend.confirmed)
+            $friends.append(friendTemplate(context));
+    });
+  });
+}
+
+function friendSelected(username) {
+  $('#form-chat-user').val(username);
+  $("#select-friend").css('display', 'none');
 }

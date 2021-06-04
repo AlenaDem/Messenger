@@ -21,7 +21,7 @@ let friendTemplate = Handlebars.compile($("#friend-template").html());
 
 function fetchManageSettings(chatId) {
     jQuery.get(url + "/fetchChatSettings/" + chatId, function (response) {
-        $("#delete-chat-btn").show();
+        $("#delete-chat-btn").hide();
         if (response.can_delete)
             $("#delete-chat-btn").show();
     });
