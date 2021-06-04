@@ -10,4 +10,4 @@ Thymeleaf \
 Spring Data JPA \
 MySQL Driver \
 Spring Security \
-Java Mail Sender \
+Java Mail Sender
