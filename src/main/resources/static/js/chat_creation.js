@@ -1,21 +1,11 @@
+$("#create-chat-btn").click(function () {
+    $("#create-chat").css('display', 'block');
+    $("#form-chat-type").trigger("reset");
+});
 
-var create_window = document.getElementById("create-chat");
-var btn = document.getElementById("create-chat-btn");
-var close_span = document.getElementsByClassName("close-create-chat")[0];
-
-btn.onclick = function () {
-    create_window.style.display = "block";
-}
-
-close_span.onclick = function () {
-    create_window.style.display = "none";
-}
-
-window.onclick = function (event) {
-    if (event.target == create_window) {
-        create_window.style.display = "none";
-    }
-}
+$('.close-create-chat').click(function () {
+    $("#create-chat").css('display', 'none');
+});
 
 $("#form-chat-type").change(function() {
     if ($(this).val() == "PERSONAL") {
@@ -38,6 +28,7 @@ function createChat() {
         type: chat_type
         }
     ));
+    $("#create-chat").css('display', 'none');
 }
 
 function newChatCreated(response) {

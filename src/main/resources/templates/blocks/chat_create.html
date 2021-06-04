@@ -1,0 +1,34 @@
+<!-- Окно создания комнаты -->
+
+<div th:fragment="chat-create-fragment">
+
+    <div id="create-chat" class="create-chat">
+        <div class="create-chat-content col-6 align-center">
+            <span class="close-create-chat">&times;</span>
+            <h3>Создать новый чат</h3>
+
+            <form class="form" name="chat-creation-form">
+                <div class="form-group">
+                    <label for="form-chat-name">Имя чата: </label>
+                    <input class="form-control col-5" maxlength="40" id="form-chat-name" type="text">
+                </div>
+                <div class="form-group">
+                    <p><label for="form-chat-type">Тип чата: </label></p>
+                    <select class="form-select" id="form-chat-type">
+                        <option value="PUBLIC">Общий чат</option>
+                        <option value="PRIVATE">Закрытый чат</option>
+                        <option value="PERSONAL">Личный чат</option>
+                    </select>
+                </div>
+                <div class="form-group" id="username-field">
+                    <label for="form-chat-user">Пользователь: </label>
+                    <input class="form-control col-5" maxlength="30" id="form-chat-user" type="text"><br>
+                </div>
+                <input type="button" class="btn btn-light" value="Создать" onclick="createChat()">
+        </div>
+        </form>
+    </div>
+
+    <script src="js/chat_creation.js"></script>
+
+</div>

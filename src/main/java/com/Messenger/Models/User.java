@@ -10,10 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,20 +34,47 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private String password;
 	
+    @Transient
+    private String passwordConfirm;
+    
+	@Column(nullable = false)
+	private String email;
+	
     @ManyToOne
     private Role role;
     
-    @JsonIgnore
+	@Column(nullable = false)
+	private boolean confirmed;
+	
+    @Lob
+    @Column(nullable = false)
+    private byte[] avatar;
+
+	@JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<ChatMessage> messages;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<User> friends;
-	
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     Set<ChatUserRelation> chats;
-	
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "creator")
+    Set<ChatRoom> createdRooms;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "fromUser")
+    Set<FriendshipRelation> outFriends;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "toUser")
+    Set<FriendshipRelation> inFriends;
+    
+	public User() {
+		confirmed = false;
+		avatar = new byte[0];
+	}
+
 	public Set<ChatMessage> getMessages() {
 		return messages;
 	}
@@ -59,17 +87,32 @@ public class User implements UserDetails {
 		return chats;
 	}
 
+	public boolean isConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(boolean confirmed) {
+		this.confirmed = confirmed;
+	}
+
 	public void setChats(Set<ChatUserRelation> chats) {
 		this.chats = chats;
 	}
 
-	public User() {
+	public String getPasswordConfirm() {
+		return passwordConfirm;
 	}
 
-	public User(String username, String password, Role roleId) {
-		this.username = username;
-		this.password = password;
-		this.role = roleId;
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Long getId() {
@@ -105,7 +148,15 @@ public class User implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
+	
+	public Set<ChatRoom> getCreatedRooms() {
+		return createdRooms;
+	}
 
+	public void setCreatedRooms(Set<ChatRoom> createdRooms) {
+		this.createdRooms = createdRooms;
+	}
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
@@ -123,7 +174,7 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return confirmed;
 	}
 
 	@Override
@@ -132,13 +183,13 @@ public class User implements UserDetails {
 		res.add(role);
 		return res;
 	}
-		    
-	public void setFriends(Set<User> friends) {
-	        this.friends = friends;
-	    }
+	
+    public byte[] getAvatar() {
+		return avatar;
+	}
 
-	public Set<User> getFriends() {
-	        return friends;
-	    }
+	public void setAvatar(byte[] avatar) {
+		this.avatar = avatar;
+	}
 
 }

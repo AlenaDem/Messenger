@@ -1,0 +1,37 @@
+<!-- Окно поиска чатов -->
+
+<div th:fragment="chat-search-fragment">
+
+    <script id="find-chat-tile-template" type="text/x-handlebars-template">
+    <li>
+        <div class="find-chat-tile" id="find-chat-tile-{{id}}">
+            <span class="find-chat-name">{{name}}</span>
+            <span class="find-chat-count">Участников: {{count}}</span>
+            <button class="btn btn-light pull-right" id="enter-chat-btn"onclick="joinChat('{{id}}')">Войти</button>
+        </div>
+    </li>
+    </script>
+
+    <div id="find-chat" class="find-chat">
+        <div class="find-chat-content">
+            <div>
+                <span class="close-find-chat">&times;</span>
+                <div class="input-group mb-3 mt-4">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Имя чата</span>
+                    </div>
+                    <input type="text" id="find-chat-input" aria-label="Имя чата" class="form-control"
+                        aria-describedby="inputGroup-sizing-default">
+                    <button id="start-find-chat" class="btn btn-light">Найти</button>
+                </div>
+            </div>
+            <div class="found-chat">
+                <ul id="found-chat-ul"></ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/chat_search.js"></script>
+
+</div>

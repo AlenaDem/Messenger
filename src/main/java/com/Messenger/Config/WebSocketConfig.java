@@ -8,11 +8,12 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
+import com.Messenger.Settings;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-	private String url = "http://localhost:8081";
 	
 	@Bean
 	public TopicSubscriptionInterceptor topicSubscriptionInterceptor() {
@@ -21,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/msg").setAllowedOrigins(url).withSockJS();
+		registry.addEndpoint("/msg").setAllowedOrigins(Settings.URL).withSockJS();
 	}
 
 	@Override

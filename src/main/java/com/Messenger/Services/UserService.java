@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.Messenger.Settings;
+import com.Messenger.Models.ChatRoom;
 import com.Messenger.Models.Role;
 import com.Messenger.Models.User;
 import com.Messenger.Repo.RoleRepository;
@@ -33,16 +35,29 @@ public class UserService implements UserDetailsService {
         return user;
     }
     
+    public boolean saveUser(User user) {
+    	var userRole = roleRepository.findByName(Settings.ROLE_USER);
+    	if (userRole != null)
+    		return saveUser(user, userRole);
+    	return false;
+    }
+    
     public boolean saveUser(User user, Role role) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDB != null) {
+        if (userFromDB != null)
             return false;
-        }
+        
+        userFromDB = userRepository.findByEmail(user.getEmail());
+        if (userFromDB != null)
+            return false;
 
         user.setRole(role);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
+    
+	public boolean userCanManageChat(User user, ChatRoom chat) {
+		return chat.getCreator().getId() == user.getId() || user.getRole().isAdmin() || user.getRole().isSuperAdmin();
+	}
 }

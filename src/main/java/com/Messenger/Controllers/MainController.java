@@ -1,10 +1,15 @@
 package com.Messenger.Controllers;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 
+import com.Messenger.Settings;
 import com.Messenger.Models.ChatRoom;
 import com.Messenger.Models.ChatType;
 import com.Messenger.Models.ChatUserRelation;
@@ -21,46 +26,59 @@ import com.Messenger.Services.UserService;
 @Controller
 public class MainController {
 
-	@Autowired private UserRepository ur;
-	@Autowired private RoleRepository rr;
-	@Autowired private ChatRoomRepository crr;
-	@Autowired private ChatTypeRepository ctr;
-	@Autowired private UserService userService;
-	@Autowired private ChatUserRelationRepository chatUserRepo;
-
-	@RequestMapping("/users")
-	public String users(Model model) {
-		var users = ur.findAll();
-		model.addAttribute("users", users);
-		return "/login";
-	}
+	@Autowired UserRepository userRepo;
+	@Autowired RoleRepository roleRepo;
+	@Autowired ChatRoomRepository chatRepo;
+	@Autowired ChatTypeRepository chatTypeRepo;
+	@Autowired UserService userService;
+	@Autowired ChatUserRelationRepository chatUserRepo;
 
 	@RequestMapping("/")
 	public String index() {
-		return "/index";
+		return "redirect:/chat";
 	}
 
 	@RequestMapping("/demo")
 	public String demo() {
 
-		Role role = new Role("ROLE_USER");
-		rr.save(role);
-		var user = new User("user", "1", role);
+		Role role = new Role(Settings.ROLE_USER);
+		roleRepo.save(role);
+		var user = new User();
+		user.setUsername("user");
+		user.setPassword("1");
+		user.setRole(role);
+		user.setEmail("user@mail.xx");
+		user.setConfirmed(true);
 		userService.saveUser(user, role);
 
-		role = new Role("ROLE_ADMIN");
-		rr.save(role);
-		user = new User("admin", "1", role);
+		role = new Role(Settings.ROLE_ADMIN);
+		roleRepo.save(role);
+		user = new User();
+		user.setUsername("admin");
+		user.setPassword("1");
+		user.setRole(role);
+		user.setEmail("admin@mail.xx");
+		user.setConfirmed(true);
+		userService.saveUser(user, role);
+		
+		role = new Role(Settings.ROLE_SUPERADMIN);
+		roleRepo.save(role);
+		user = new User();
+		user.setUsername("sadmin");
+		user.setPassword("1");
+		user.setRole(role);
+		user.setEmail("sadmin@mail.xx");
+		user.setConfirmed(true);
 		userService.saveUser(user, role);
 		
 		var chatType = new ChatType("PERSONAL");
-		ctr.save(chatType);
+		chatTypeRepo.save(chatType);
 		chatType = new ChatType("PRIVATE");
-		ctr.save(chatType);
+		chatTypeRepo.save(chatType);
 		chatType = new ChatType("PUBLIC");
-		ctr.save(chatType);
-		var chatRoom = new ChatRoom("Комната Чипсика", chatType);
-		crr.save(chatRoom);
+		chatTypeRepo.save(chatType);
+		var chatRoom = new ChatRoom("Комната Чипсика", chatType, user);
+		chatRepo.save(chatRoom);
 		
 		var rel = new ChatUserRelation(chatRoom, user);
 		chatUserRepo.save(rel);
@@ -71,7 +89,16 @@ public class MainController {
 
 	@RequestMapping("/chat")
 	public String chat() {
-		return "/chat";
+		return "chat";
 	}
-
+	
+	@RequestMapping("/profile")
+	public String profile() {
+		return "profile";
+	}
+	
+	@RequestMapping("/logout")
+	public String logout() {
+		return "logout";
+	}
 }

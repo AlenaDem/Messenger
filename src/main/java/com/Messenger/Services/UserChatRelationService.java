@@ -14,9 +14,6 @@ public class UserChatRelationService {
 	@Autowired ChatRoomRepository chatRepo;
 	@Autowired ChatUserRelationRepository chatUserRepo;
 	
-	public UserChatRelationService() {
-	}
-	
 	public boolean userInChat(String username, Long chatId) {
 		var user = userRepo.findByUsername(username);
 		if (user == null)

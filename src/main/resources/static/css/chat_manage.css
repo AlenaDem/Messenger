@@ -1,5 +1,5 @@
 /* The Modal (background) */
-.find-chat {
+.manage-chat, .friend-list {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -8,60 +8,55 @@
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
   
   /* Modal Content */
-  .find-chat-content {
+  .manage-chat-content, .friend-list-content {
     background-color: #444753;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 50%;
     height: 80%;
-    display: flex;
-    flex-direction: column;
   }
   
   /* The Close Button */
-  .close-find-chat {
+  .close-manage-chat, .close-friend-list {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
   }
   
-  .close-find-chat:hover,
-  .close-find-chat:focus {
+  .close-manage-chat:hover,
+  .close-manage-chat:focus,
+  .close-friend-list:hover,
+  .close-friend-list:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
   }
 
-  .found-chat {
+  .manage-chat-users, .friend-list-wrapper {
     display: block;
     overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 100%;
   }
 
-  .find-chat-tile {
+  .chat-user-tile, .friend-tile {
     padding: 15px;
     padding-bottom: 30px;
     border: 1px solid #888;
     border-radius: 5px;
     margin-bottom: 2px;
-    word-break: break-word;
   }
 
-  .find-chat-name {
+  .chat-user-name {
     font-size: 16px;
-  }
-
-  .find-chat-count {
-    font-size: 12px;
-    color: #888;
-  }
-
-  #start-find-chat {
-    border-radius: 0 5px 5px 0;
   }

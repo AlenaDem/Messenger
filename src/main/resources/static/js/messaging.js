@@ -3,9 +3,8 @@ let $chatHistoryList;
 let $sendMsgButton;
 let $msgTextArea;
 
-var recieveTemplate = Handlebars.compile($("#message-template").html());
-var sendTemplate = Handlebars.compile($("#my-message-template").html());
-var imageId = 0;
+let recieveTemplate = Handlebars.compile($("#message-template").html());
+let sendTemplate = Handlebars.compile($("#my-message-template").html());
 
 init();
 
@@ -41,8 +40,10 @@ function renderMessageCloud(msg) {
         username: msg.username,
         message: msg.text,
         type: msg.type,
-        filename: msg.type === "file" ? msg.filename : "",
-        imagename: msg.type === "image" ? msg.filename : ""
+        filename: msg.filename,
+        fileid: msg.type === "file" ? msg.id : "",
+        imageid: msg.type === "image" ? msg.id : "",
+        deletable: msg.deletable
     };
     $chatHistoryList.append(generateTemplate(context));
     scrollToBottom();
@@ -53,24 +54,23 @@ function generateTemplate(context) {
     var wrapper= document.createElement('div');
     wrapper.innerHTML = template;
     if (context.type == 'text') {
-        var img = $(wrapper).find('.image-holder');
-        img.remove();
-        var file = $(wrapper).find('.file-holder');
-        file.remove(); 
+        $(wrapper).find('.image-holder').remove();
+        $(wrapper).find('.file-holder').remove(); 
     }
-    if (context.type == 'image') {
-        var file = $(wrapper).find('.file-holder');
-        file.remove();
 
+    if (context.type == 'image') {
+        $(wrapper).find('.file-holder').remove();
         var img = $(wrapper).find('img')[0];
         img.onload = function() {
             scrollToBottom();
         };
     }
-    if (context.type == 'file') {
-        var img = $(wrapper).find('.image-holder');
-        img.remove(); 
-    }
+
+    if (context.type == 'file')
+        $(wrapper).find('.image-holder').remove(); 
+
+    if (!context.deletable)
+        $(wrapper).find('.delete-msg').remove();
 
     return wrapper.innerHTML;
 }
@@ -83,7 +83,7 @@ function sendMessage(message) {
         window.setTimeout(sendMessage(message), 100);
     }
     else {
-        stompClient.send("/app/chat/message/" + currentChat, {}, JSON.stringify({
+        stompClient.send("/app/chat/message/new/" + currentChat, {}, JSON.stringify({
             text: message,
             file_name: uploadedFileName,
             file_type: uploadedFileType,
@@ -92,6 +92,13 @@ function sendMessage(message) {
         resetUploadFile();
         $msgTextArea.val('');
     }
+}
+
+function deleteMessage(msgId) {
+    stompClient.send("/app/chat/message/delete", {}, JSON.stringify({
+        message_id: msgId,
+        chat_id: currentChat
+    }));
 }
 
 function scrollToBottom() {

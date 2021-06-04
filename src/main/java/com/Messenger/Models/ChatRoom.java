@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -27,12 +30,17 @@ public class ChatRoom {
     @ManyToOne
 	private ChatType type;
     
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "chat")
+    @ManyToOne
+    private User creator;
+
+	@JsonIgnore
+    @OneToMany(mappedBy = "chat")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ChatMessage> messages;
     
     @JsonIgnore
     @OneToMany(mappedBy = "chat")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Set<ChatUserRelation> chats;
     
     public Set<ChatMessage> getMessages() {
@@ -54,6 +62,12 @@ public class ChatRoom {
 	public ChatRoom() {
     }
 
+	public ChatRoom(String name, ChatType type, User creator) {
+        this.name = name;
+        this.type = type;
+        this.creator = creator;
+    }
+    
     public ChatType getType() {
 		return type;
 	}
@@ -62,15 +76,7 @@ public class ChatRoom {
 		this.type = type;
 	}
 
-	public ChatRoom(String name) {
-        this.name = name;
-    }
 
-	public ChatRoom(String name, ChatType type) {
-        this.name = name;
-        this.type = type;
-    }
-    
     public Long getId() {
         return id;
     }
@@ -86,4 +92,12 @@ public class ChatRoom {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
 }

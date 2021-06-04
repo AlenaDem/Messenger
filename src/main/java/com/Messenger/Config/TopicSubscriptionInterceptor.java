@@ -46,7 +46,7 @@ public class TopicSubscriptionInterceptor implements ChannelInterceptor {
 		var splitted = destination.split("/");
 		if (splitted.length < 5)
 			return 0L;
-		Long id = Long.parseLong(splitted[4]);
+		Long id = Long.parseLong(splitted[splitted.length - 1]);
 		return id;
 	}
 }

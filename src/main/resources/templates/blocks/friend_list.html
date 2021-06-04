@@ -1,0 +1,21 @@
+<div th:fragment="friend-list-fragment">
+
+    <script id="friend-template" type="text/x-handlebars-template">
+        <li>
+            <div class="friend-tile" id="friend-tile-{{id}}">
+                <span class="friend-name">{{username}}</span>
+                <button class="btn btn-light pull-right" id="friend-btn"></button>
+            </div>
+        </li>
+    </script>
+
+    <div id="friend-list" class="friend-list">
+        <div class="friend-list-content">
+            <span class="close-friend-list">&times;</span>
+            <div class="friend-list-wrapper">
+                <ul id="friend-list-ul"></ul>
+            </div>
+        </div>
+    </div>
+
+</div>

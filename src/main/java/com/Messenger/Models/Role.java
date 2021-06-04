@@ -1,6 +1,5 @@
 package com.Messenger.Models;
 
-import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,14 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
-import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.Messenger.Settings;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -59,5 +56,13 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return getName();
+    }
+    
+    public boolean isAdmin() {
+    	return name.equals(Settings.ROLE_ADMIN);
+    }
+    
+    public boolean isSuperAdmin() {
+    	return name.equals(Settings.ROLE_SUPERADMIN);
     }
 }

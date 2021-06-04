@@ -1,22 +1,13 @@
-var find_window = document.getElementById("find-chat");
-var btn = document.getElementById("find-chat-btn");
-var close_span = document.getElementsByClassName("close-find-chat")[0];
+$("#find-chat-btn").click(function () {
+    $("#find-chat").css('display', 'block');
+    $("#found-chat-ul").html('');
+});
 
-btn.onclick = function () {
-    find_window.style.display = "block";
-}
+$('.close-find-chat').click(function () {
+    $("#find-chat").css('display', 'none');
+});
 
-close_span.onclick = function () {
-    find_window.style.display = "none";
-}
-
-window.onclick = function (event) {
-    if (event.target == find_window) {
-        find_window.style.display = "none";
-    }
-}
-
-$('#start-find-chat').on("click", findChat.bind(this));
+$('#start-find-chat').on("click", findChat);
 
 function findChat() {
     var chat_name = document.getElementById('find-chat-input').value.toString();
@@ -40,7 +31,7 @@ function findChat() {
 function joinChat(chatId) {
     console.log("Enter to: " + chatId);
     stompClient.send("/app/chat/join/" + chatId, {});
-    find_window.style.display = "none";
+    $("#find-chat").css('display', 'none');
 }
 
 function onJoinChat(response) {

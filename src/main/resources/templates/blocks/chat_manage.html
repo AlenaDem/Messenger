@@ -1,0 +1,27 @@
+<!-- Окно управления чатом -->
+
+<div th:fragment="chat-manage-fragment">
+
+    <script id="chat-user-template" type="text/x-handlebars-template">
+        <li>
+            <div class="chat-user-tile" id="chat-user-tile-{{id}}">
+                <span class="chat-user-name">{{username}}</span>
+                <button class="btn btn-light pull-right" id="kick-user-btn"onclick="kickUser('{{id}}','{{username}}')">Исключить</button>
+            </div>
+        </li>
+    </script>
+
+    <div id="manage-chat" class="manage-chat">
+        <div class="manage-chat-content">
+            <span class="close-manage-chat">&times;</span>
+            <button class="btn btn-light pull-right" id="add-user-btn">Добавить участников</button>
+            <button class="btn btn-light pull-right" id="delete-chat-btn">Удалить чат</button>
+            <div class="manage-chat-users">
+                <ul id="chat-users-ul"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/chat_manage.js"></script>
+
+</div>

@@ -31,11 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/", "/demo").permitAll()
+                    .antMatchers("/", "/demo", "/registration", "/confirm/**").permitAll()
     				.antMatchers("/css/**").permitAll()
     				.antMatchers("/js/**").permitAll()
                     .antMatchers("/resources/**").permitAll()
-                    .antMatchers("/chat").hasAnyRole("ADMIN", "USER")
+                    .antMatchers("/chat").hasAnyRole("SUPERADMIN", "ADMIN", "USER")
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()

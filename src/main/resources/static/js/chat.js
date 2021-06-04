@@ -15,13 +15,15 @@ function init() {
             console.log("Your username: " + frame.headers['user-name']);
             currentUser = frame.headers['user-name'];
 
-            preFetch();
+            fetchChats();
             stompClient.subscribe("/topic/chat/created/" + currentUser, newChatCreated);
             stompClient.subscribe("/topic/chat/updated/" + currentUser, fetchChats);
+            stompClient.subscribe("/topic/chat/leave/" + currentUser, onLeaveChat);
             stompClient.subscribe("/topic/chat/joined/" + currentUser, onJoinChat);
+            stompClient.subscribe("/topic/chat/kicked/" + currentUser, onUserKicked);
         });
     }
-    updateChatBox();
+
     initListeners();
 }
 
@@ -29,14 +31,12 @@ function initListeners() {
     $('#leave-btn').on("click", leaveChat.bind(this));
 }
 
-function preFetch() {
-    fetchChats();
-}
-
 function subscribeChat(chatId) {
     chatId = chatId.toString();
     if (!subscribedChats.has(chatId)) {
-        stompClient.subscribe("/topic/chat/message/" + chatId, newChatMessage, { id: "chat_" + chatId });
+        stompClient.subscribe("/topic/chat/message/created/" + chatId, newChatMessage);
+        stompClient.subscribe("/topic/chat/message/deleted/" + chatId, onMessageDeleted);
+        stompClient.subscribe("/topic/chat/deleted/" + chatId, onChatDeleted);
         subscribedChats.add(chatId);
     }
 }
@@ -44,17 +44,25 @@ function subscribeChat(chatId) {
 function unsubscribeChat(chatId) {
     chatId = chatId.toString();
     if (subscribedChats.has(chatId)) {
-        stompClient.unsubscribe("/topic/chat/message/" + chatId, newChatMessage, { id: "chat_" + chatId });
+        stompClient.unsubscribe("/topic/chat/message/created/" + chatId, newChatMessage);
+        stompClient.unsubscribe("/topic/chat/message/deleted/" + chatId, onMessageDeleted);
+        stompClient.unsubscribe("/topic/chat/deleted/" + chatId, onChatDeleted);
         subscribedChats.delete(chatId);
     }
 }
 
 function newChatMessage(response) {
     let data = JSON.parse(response.body);
-    if (currentChat.toString() === data.chat_id.toString())
+    if (currentChat != null && currentChat.toString() === data.chat_id.toString())
         renderMessageCloud(data);
     else
         showNewMessageIndicator(data.chat_id, true)
+}
+
+function onMessageDeleted(response) {
+    var chatId = response.body;
+    if (currentChat == chatId)
+        loadChat(chatId);
 }
 
 function showNewMessageIndicator(chatId, show) {
@@ -69,17 +77,6 @@ function showNewMessageIndicator(chatId, show) {
         }
         indicator.style.visibility = 'hidden'
     }
-}
-
-function registration() {
-    let userName = document.getElementById("userName").value;
-    jQuery.get(url + "/registration/" + userName, function (response) {
-        connectToChat(userName);
-    }).fail(function (error) {
-        if (error.status === 400) {
-            alert("Login is already busy!")
-        }
-    })
 }
 
 function fetchChats() {
@@ -129,7 +126,12 @@ function leaveChat() {
     if (currentChat === null)
         return;
     stompClient.send("/app/chat/leave/" + currentChat, {});
-    unsubscribeChat(currentChat);
+}
+
+function onLeaveChat(response) {
+    var chatId = response.body;
+    unsubscribeChat(chatId);
+    fetchChats();
     currentChat = null;
     updateChatBox();
 }
